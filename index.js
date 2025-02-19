@@ -20,7 +20,7 @@ dotenv.config()
 
 const app = express()
 //const port = 3000
-const port = process.env.port
+const port = process.env.PORT || 3000
 
 // const database = new Pool({
 //     connectionString:`postgres://dev:${encodeURIComponent('1234')}@127.0.0.1:5432/KuShop`

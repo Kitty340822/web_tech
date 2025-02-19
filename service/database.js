@@ -11,6 +11,6 @@ const dbport = process.env.dbport
 const db = process.env.db
 
 export default   new Pool({
-    //connectionString:`postgres://dev:${encodeURIComponent('1234')}@127.0.0.1:5432/Ku_shop`
+    // connectionString:`postgres://dev:${encodeURIComponent('1234')}@127.0.0.1:5432/Ku_shop`
     connectionString:`${dbserver}://${dbuser}:${encodeURIComponent(dbpassword)}@${dbhost}:${dbport}/${db}`
 })

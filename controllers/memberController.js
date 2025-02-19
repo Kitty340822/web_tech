@@ -33,7 +33,7 @@ export async function postMember(req, res) {
             values: [req.body.memEmail]
         })
         if (existsResult.rows[0].exists) {
-            console.log("Fail2")
+            console.log("Fail2",err.message)
             return res.json({messageregister: 'fail' })
         }
 
@@ -56,10 +56,9 @@ export async function postMember(req, res) {
         console.log("OK")
         return res.json({messageregister: 'success' })
     } catch (err) {
-        console.log("Fail3")
+        console.log("Fail3",err.message)
         return res.json({messageregister: 'fail' })
     }
-
 }
 
 export async function LoginMember(req, res) {
@@ -76,7 +75,7 @@ export async function LoginMember(req, res) {
             values: [req.body.loginname]
         })
         if (!existsResult.rows[0].exists) {
-            console.log("FAIL1")
+            console.log("FAIL1",err.message)
             return res.json({messagelogin:'fail'})
         }
 
@@ -102,11 +101,11 @@ export async function LoginMember(req, res) {
             res.status(201).json({messagelogin:'success'})
         }
         else{
-            console.log("FAIL2")
+            console.log("FAIL2",err.message)
             res.status(400).json({messagelogin:'fail'})
         }
     } catch (err) {
-        console.log("FAIL3")
+        console.log("FAIL3", err.message)
         return res.json({messagelogin:'fail'})
     }
 

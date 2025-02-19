@@ -79,17 +79,19 @@ export async function postCartDtl(req, res) {
         }
         // ดูว่ามี Product เดิมอยู่่หรือไม่
         const pdResult = await database.query({
-            text: `  SELECT * FROM "cartDtl" ctd
+            text: `  SELECT * FROM "cartDTL" ctd
                     WHERE ctd."cartId" = $1
                     AND ctd."pdId" = $2 ` ,
             values: [req.body.cartId,
             req.body.pdId] //ค่า Parameter ที่ส่งมา
         })
+        console.log(req.body);
+
         // ถ้าไม่มีให้ INSERT
         if (pdResult.rowCount == 0) {
             try {
                 const result = await database.query({
-                    text: ` INSERT INTO "cartDtl" ("cartId", "pdId", "qty","price")
+                    text: ` INSERT INTO "cartDTL" ("cartId", "pdId", "qty","price")
                             VALUES ($1,$2,$3,$4) `,
                     values: [
                         req.body.cartId,
@@ -107,7 +109,7 @@ export async function postCartDtl(req, res) {
         else {// ถ้ามีแล้วให้ UPDATE
             try {
                 const result = await database.query({
-                    text: ` UPDATE "cartDtl" SET "qty" = $1
+                    text: ` UPDATE "cartDTL" SET "qty" = $1
                             WHERE "cartId" = $2
                             AND "pdId" = $3 `,
                     values: [
@@ -133,7 +135,7 @@ export async function sumCart(req, res) {
     const result = await database.query
     ({
         text: `  SELECT SUM(qty) AS qty,SUM(qty*price) AS money
-                FROM "cartDtl" ctd
+                FROM "cartDTL" ctd
                 WHERE ctd."cartId" = $1` ,
         values: [req.session.cartId]
          //ค่า Parameter ที่ส่งมา
@@ -150,7 +152,7 @@ export async function getCart(req, res) {
     try {
         const result = await database.query({
             text:`  SELECT ct.*, SUM(ctd.qty) AS sqty,SUM(ctd.price*ctd.qty) AS sprice
-                    FROM carts ct LEFT JOIN "cartDtl" ctd ON ct."cartId" = ctd."cartId"
+                    FROM carts ct LEFT JOIN "cartDTL" ctd ON ct."cartId" = ctd."cartId"
                     WHERE ct."cartId"=$1
                     GROUP BY ct."cartId" ` ,
             values:[req.params.id]
@@ -170,7 +172,7 @@ export async function getCartDtl(req, res) {
         const result = await database.query({
         text:`  SELECT  ROW_NUMBER() OVER (ORDER BY ctd."pdId") AS row_number,
                         ctd."pdId",pd."pd_name",ctd.qty,ctd.price
-                FROM    "cartDtl" ctd LEFT JOIN "products" pd ON ctd."pdId" = pd."pd_id"  
+                FROM    "cartDTL" ctd LEFT JOIN "products" pd ON ctd."pdId" = pd."pd_id"  
                 WHERE ctd."cartId" =$1
                 ORDER BY ctd."pdId" ` ,
             values:[req.params.id]
@@ -190,7 +192,7 @@ export async function getCartByCus(req, res) {
         const result = await database.query({
             text:`  SELECT ROW_NUMBER() OVER (ORDER BY ct."cartId" DESC) AS row_number,
                             ct.*, SUM(ctd.qty) AS sqty,SUM(ctd.price*ctd.qty) AS sprice
-                    FROM carts ct LEFT JOIN "cartDtl" ctd ON ct."cartId" = ctd."cartId"
+                    FROM carts ct LEFT JOIN "cartDTL" ctd ON ct."cartId" = ctd."cartId"
                     WHERE ct."cusId"=$1
                     GROUP BY ct."cartId"
                     ORDER BY ct."cartId" DESC` ,
